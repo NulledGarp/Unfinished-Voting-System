@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Vote{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-100 py-10 px-4">
+  <div class="max-w-4xl mx-auto bg-white rounded-2xl p-8 shadow-lg" data-aos="zoom-in">
+    <h1 class="text-3xl font-bold text-center mb-8 text-red-800">Cast Your Vote</h1>
+
+    <form method="POST" action="/submit-vote">
+      <div class="space-y-10">
+
+        <!-- Head Boy -->
+        <div>
+          <h2 class="text-xl font-semibold mb-4 text-gray-800">Head Boy Candidates</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {% for id, name in [('hb1', 'Test Boy'), ('hb2', 'Test Boy1'), ('hb3', 'Test Boy2')] %}
+            <label class="bg-gray-50 rounded-xl p-4 shadow hover:shadow-md transition cursor-pointer block" data-aos="fade-up">
+              <img src="https://edalafsms4.com/students_v3/v3/latest/images/student.png"
+                   alt="{{ name }}" class="w-full h-40 object-cover rounded-md mb-2">
+              <div class="flex items-center space-x-3">
+                <input type="radio" name="head_boy" value="{{ id }}" class="accent-red-600">
+                <span class="text-gray-800 font-medium">{{ name }}</span>
+              </div>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Head Girl -->
+        <div>
+          <h2 class="text-xl font-semibold mb-4 text-gray-800">Head Girl Candidates</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {% for id, name in [('hg1', 'Test Girl'), ('hg2', 'Test Girl1'), ('hg3', 'Test Girl')] %}
+            <label class="bg-gray-50 rounded-xl p-4 shadow hover:shadow-md transition cursor-pointer block" data-aos="fade-up">
+              <img src="https://edalafsms4.com/students_v3/v3/latest/images/student.png"
+                   alt="{{ name }}" class="w-full h-40 object-cover rounded-md mb-2">
+              <div class="flex items-center space-x-3">
+                <input type="radio" name="head_girl" value="{{ id }}" class="accent-red-600">
+                <span class="text-gray-800 font-medium">{{ name }}</span>
+              </div>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit"
+          class="w-full mt-8 bg-red-800 hover:bg-red-900 text-white py-3 rounded-lg text-lg font-semibold transition">
+          Submit Vote
+        </button>
+
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
