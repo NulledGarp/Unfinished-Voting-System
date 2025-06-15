@@ -21,10 +21,10 @@
 
 This project is a secure, modern, and responsive electronic voting system built with Flask and TailwindCSS. It's designed for internal use like school elections and offers:
 
-- 🔐 Admin & Voter Login
-- 🧾 Google-Form-Style Voting Interface
-- 📊 Live Result Chart (for Admins)
-- 🖼️ Candidate Photos + Names
+- 🔐 Admin & Voter Login W.I.P
+- 🧾 ]Form-Style Voting Interface W.I.P
+- 📊 Live Result Chart (for Admins) W.I.P
+- 🖼️ Candidate Photos + Names W.I.P
 - ✨ AOS Animation & Blur Glass UI
 - 💻 Mobile and Tablet Responsive Layout
 
