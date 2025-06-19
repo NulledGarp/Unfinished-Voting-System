@@ -41,11 +41,22 @@ def login():
             flash('Invalid credentials', 'error')
 
     return render_template('login.html')
+# Admin login route
+@app.route('/admin-login', methods=['GET', 'POST'])
 
 # Voters route
 @app.route('/voters')
 def voters():
     return render_template('voters.html')
+# Submit vote route
+@app.route('/submit_vote', methods=['GET', 'POST'])
+def submit_vote():
+    if request.method == 'POST':
+        head_boy = request.form.get('head_boy')
+        head_girl = request.form.get('head_girl')
+        # You can process/store the vote here if needed
+        return render_template('submit_vote.html')
+    return render_template('submit_vote.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
