@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from models import db, User
+from model import db, User
 
 @app.route('/admin-login', methods=['GET', 'POST'])
 def admin_login():

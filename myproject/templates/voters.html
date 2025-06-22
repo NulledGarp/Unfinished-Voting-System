@@ -2,11 +2,12 @@
 {% block title %}Vote{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gray-100 py-10 px-4">
-  <div class="max-w-4xl mx-auto bg-white rounded-2xl p-8 shadow-lg" data-aos="zoom-in">
+<div class="min-h-screen bg-gray-100 py-10 px-4 flex relative">
+  <!-- Main Voting Box -->
+  <div id="main-vote-form" class="max-w-4xl mx-auto bg-white rounded-2xl p-8 shadow-lg flex-1 transition-all duration-300"
+       data-aos="zoom-in">
     <h1 class="text-3xl font-bold text-center mb-8 text-red-800">Cast Your Vote</h1>
-
-    <form method="POST" action="/submit_vote">
+    <form method="POST" action="/submit_vote" id="voteForm">
       <div class="space-y-10">
 
         <!-- Head Boy -->
@@ -18,7 +19,8 @@
               <img src="https://edalafsms4.com/students_v3/v3/latest/images/student.png"
                    alt="{{ name }}" class="w-full h-40 object-cover rounded-md mb-2">
               <div class="flex items-center space-x-3">
-                <input type="radio" name="head_boy" value="{{ id }}" class="accent-red-600">
+                <input type="radio" name="head_boy" value="{{ id }}" class="accent-red-600 vote-radio"
+                  data-category="Head Boy" data-name="{{ name }}" data-id="{{ id }}">
                 <span class="text-gray-800 font-medium">{{ name }}</span>
               </div>
             </label>
@@ -35,22 +37,102 @@
               <img src="https://edalafsms4.com/students_v3/v3/latest/images/student.png"
                    alt="{{ name }}" class="w-full h-40 object-cover rounded-md mb-2">
               <div class="flex items-center space-x-3">
-                <input type="radio" name="head_girl" value="{{ id }}" class="accent-red-600">
+                <input type="radio" name="head_girl" value="{{ id }}" class="accent-red-600 vote-radio"
+                  data-category="Head Girl" data-name="{{ name }}" data-id="{{ id }}">
                 <span class="text-gray-800 font-medium">{{ name }}</span>
               </div>
             </label>
             {% endfor %}
           </div>
         </div>
-
-        <!-- Submit Button -->
-        <button type="submit"
-          class="w-full mt-8 bg-red-800 hover:bg-red-900 text-white py-3 rounded-lg text-lg font-semibold transition">
-          Submit
-        </button>
-
+        <!-- Sports Prefect --> 
+        <div>
+          <h2 class="text-xl font-semibold mb-4 text-gray-800">Sports Prefect Candidates</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {% for id, name in [('sp1', 'Test Sport'), ('sp2', 'Test Sport1'), ('sp3', 'Test Sport2')] %}
+            <label class="bg-gray-50 rounded-xl p-4 shadow hover:shadow-md transition cursor-pointer block" data-aos="fade-up">
+              <img src="https://edalafsms4.com/students_v3/v3/latest/images/student.png"
+                   alt="{{ name }}" class="w-full h-40 object-cover rounded-md mb-2">
+              <div class="flex items-center space-x-3">
+                <input type="radio" name="sports_prefect" value="{{ id }}" class="accent-red-600 vote-radio"
+                  data-category="Sports Prefect" data-name="{{ name }}" data-id="{{ id }}">
+                <span class="text-gray-800 font-medium">{{ name }}</span>
+              </div>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
       </div>
     </form>
   </div>
+
+  <!-- Voting Slip Sidebar -->
+  <div id="voting-slip" class="fixed right-0 top-0 h-full w-80 bg-white shadow-2xl p-6 border-l border-gray-200 z-50 transform translate-x-full transition-transform duration-300 flex flex-col"
+       style="min-width:320px;">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-xl font-bold text-red-800">Your Voting Slip</h3>
+      <button id="closeSlip" class="text-gray-500 hover:text-red-800 text-2xl font-bold">&times;</button>
+    </div>
+    <div id="slip-content" class="flex-1 space-y-6">
+      <!-- Candidate selections will appear here -->
+    </div>
+    <button id="submitSlip"
+      class="w-full mt-6 bg-red-800 hover:bg-red-900 text-white py-2 rounded-lg text-lg font-semibold transition">
+      Submit Vote
+    </button>
+  </div>
 </div>
+
+<script>
+// slip open/close functionality
+function openSlip() {
+  document.getElementById('voting-slip').classList.remove('translate-x-full');
+  document.getElementById('main-vote-form').classList.add('mr-80');
+}
+function closeSlip() {
+  document.getElementById('voting-slip').classList.add('translate-x-full');
+  document.getElementById('main-vote-form').classList.remove('mr-80');
+}
+
+// Update slip content based on selected candidates
+function updateSlip() {
+  const radios = document.querySelectorAll('.vote-radio');
+  const slipContent = document.getElementById('slip-content');
+  slipContent.innerHTML = '';
+  let hasSelection = false;
+  let categories = {};
+
+  radios.forEach(radio => {
+    if (radio.checked) {
+      hasSelection = true;
+      const category = radio.dataset.category;
+      const name = radio.dataset.name;
+      categories[category] = name;
+    }
+  });
+
+  Object.entries(categories).forEach(([category, name]) => {
+    const div = document.createElement('div');
+    div.className = "flex items-center justify-between bg-gray-50 px-4 py-2 rounded-lg";
+    div.innerHTML = `<span class="font-semibold text-gray-700">${category}:</span>
+      <span class="text-red-800 font-bold">${name}</span>`;
+    slipContent.appendChild(div);
+  });
+
+  if (hasSelection) openSlip();
+  else closeSlip();
+}
+
+// Event listeners for radio buttons
+document.querySelectorAll('.vote-radio').forEach(radio => {
+  radio.addEventListener('change', updateSlip);
+});
+
+// Close button
+document.getElementById('closeSlip').addEventListener('click', closeSlip);
+// Submit button
+document.getElementById('submitSlip').addEventListener('click', function() {
+  document.getElementById('voteForm').submit();
+});
+</script>
 {% endblock %}
