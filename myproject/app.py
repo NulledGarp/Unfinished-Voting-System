@@ -1,11 +1,15 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
+try:
+    from model import db, User, Vote
+except ImportError:
+    from myproject.model import db, User, Vote
 from flask_sqlalchemy import SQLAlchemy
 import os
 
 app = Flask(__name__)
-app.secret_key = 'secret_key'
+app.secret_key = 'Yeshua High'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///voters.db'
-db = SQLAlchemy(app)
+db.init_app(app)
 
 # Student Model
 class Student(db.Model):
@@ -81,6 +85,14 @@ def admin_panel():
         return "Access Denied", 403
     return render_template('admin_panel.html')
 
+# --- ADMIN VOTES ROUTE ---
+@app.route('/admin/votes')
+def admin_votes():
+    if not session.get('is_admin'):
+        return redirect(url_for('admin_login'))
+    votes = Vote.query.all()
+    return render_template('admin_votes.html', votes=votes)
+
 # --- LOGOUT ROUTE ---
 @app.route('/logout-admin')
 def logout_admin():
@@ -102,10 +114,21 @@ def submit_vote():
     if request.method == 'POST':
         head_boy = request.form.get('head_boy')
         head_girl = request.form.get('head_girl')
-        # You can process/store the vote here if needed
+        sports_prefect = request.form.get('sports_prefect')
+        student_id = session.get('student_id')
+        user = User.query.filter_by(student_id=student_id).first()
+        if user:
+            existing_vote = Vote.query.filter_by(user_id=user.id).first()
+            if existing_vote:
+                flash('You have already voted!', 'error')
+                return render_template('submit_vote.html', voted=True, head_boy=head_boy, head_girl=head_girl)
+            vote = Vote(user_id=user.id, head_boy=head_boy, head_girl=head_girl, sports_prefect=sports_prefect)
+            db.session.add(vote)
+            db.session.commit()
         return render_template('submit_vote.html', voted=True, head_boy=head_boy, head_girl=head_girl)
     return render_template('submit_vote.html', voted=False)
 
 if __name__ == '__main__':
-    create_demo_user()
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
